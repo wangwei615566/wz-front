@@ -1,0 +1,175 @@
+<template>
+    <div class="fillcontain">
+        <head-top></head-top>
+        <div>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;姓名:
+            <el-input v-model="nameSearch" placeholder="请输入姓名" style="width:150px"></el-input>
+            <el-button type="primary" @click="doFilter">搜索</el-button>
+        </div>
+        <div class="table_container">
+            <el-table
+                :data="tableData"
+                highlight-current-row
+                style="width: 100%">
+                <el-table-column
+                  property="loginName"
+                  label="登录名"
+                  width="220">
+                </el-table-column>
+                <el-table-column
+                  property="registerClient"
+                  label="注册客户端">
+                </el-table-column>
+                <el-table-column
+                  property="registerIp"
+                  label="注册ip">
+                </el-table-column>
+                <el-table-column
+                    label="是否会员">
+                    <template scope="scope">
+                        <div v-if="scope.row.vipState==undefined">无状态值</div>
+                        <div v-if="scope.row.vipState==1">会员</div>
+                        <div v-if="scope.row.vipState==0">非会员</div>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                    label="用户状态">
+                    <template scope="scope">
+                        <div v-if="scope.row.state==1">启用</div>
+                        <div v-if="scope.row.state==2">禁用</div>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                  property="createTime"
+                  label="注册日期">
+                </el-table-column>
+                <el-table-column label="操作" width="160">
+                    <template scope="scope">
+                        <el-button
+                            size="small"
+                            type="danger"
+                            @click="handleEdit(scope.row)">冻结</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+            <div class="Pagination" style="text-align: left;margin-top: 10px;">
+                <el-pagination
+                    @size-change="handleSizeChange"
+                    @current-change="handleCurrentChange"
+                    :current-page="currentPage"
+                    :page-size="10"
+                    layout="total, prev, pager, next"
+                    :total="count">
+                </el-pagination>
+            </div>
+        </div>
+    </div>
+</template>
+
+<script>
+    import headTop from '../components/headTop'
+    import {userList,userUpdate} from '../api/getData'
+    export default {
+        data() {
+            return {
+                tableData: [],
+                currentRow: null,
+                pageSize: 10,
+                count: 0,
+                currentPage: 1,
+                selectTable: {},
+                visible:false,
+                nameSearch:'',
+            }
+        },
+        components: {
+            headTop,
+        },
+        created() {
+            this.initData();
+        },
+        mounted() {
+
+        },
+        methods: {
+            initData() {
+                try {
+                    const params = {
+                        searchParams: JSON.stringify({state:2}),
+                        pageSize: this.pageSize,
+                        current: this.currentPage
+                    }
+                    this.getUsers(params);
+                } catch (err) {
+                    console.log('获取数据失败', err);
+                }
+            },
+            doFilter(){
+                try {
+                    const param = {
+                        searchParams: JSON.stringify({loginName:this.nameSearch,state:2}),
+                        pageSize: this.pageSize,
+                        current: this.currentPage
+                    }
+                    this.getUsers(param);
+                } catch (err) {
+                    console.log('获取数据失败', err);
+                }
+            },
+            handleSizeChange(val) {
+                console.log(`每页 ${val} 条`);
+            },
+            handleEdit(row){
+                try{
+                    userUpdate({id:row.id}).then(result => {
+                        if (result.code == 200) {
+                            this.getUsers(this.params);
+                        } else {
+                            this.$message({
+                                type: 'error',
+                                message: result.msg
+                            });
+                        }
+                    })
+                }catch(err){
+                    this.$message({
+                        type: 'error',
+                        message: err.message
+                    });
+                }
+            },
+            handleCurrentChange(val) {
+                const params = {
+                    searchParams: JSON.stringify({loginName:this.nameSearch,state:2}),
+                    pageSize: this.pageSize,
+                    current: val
+                }
+                this.getUsers(params)
+            },
+            getUsers(params = {}) {
+                userList(params).then(result => {
+                    if (result.code == 200) {
+                        this.count = result.page.total;
+                        this.$message({
+                            type: 'success',
+                            message: result.msg
+                        });
+                        this.tableData = result.data;
+                    } else {
+                        this.$message({
+                            type: 'error',
+                            message: result.msg
+                        });
+                    }
+                })
+            },
+        },
+    }
+</script>
+
+<style lang="less">
+	@import '../style/mixin';
+    .table_container{
+        padding: 20px;
+    }
+</style>
