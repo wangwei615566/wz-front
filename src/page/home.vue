@@ -22,9 +22,10 @@
 
 <script>
 	import headTop from '../components/headTop'
-	import tendency from '../components/tendency' 
+	import tendency from '../components/tendency'
 	import dtime from 'time-formater'
 	import {userCount, orderCount, getUserCount, getOrderCount, adminDayCount, adminCount} from '@/api/getData'
+    import {mapActions, mapState} from 'vuex'
     export default {
     	data(){
     		return {
@@ -43,6 +44,7 @@
     		tendency,
     	},
     	mounted(){
+            this.getAdminData();
     		this.initData();
     		for (let i = 6; i > -1; i--) {
     			const date = dtime(new Date().getTime() - 86400000*i).format('YYYY-MM-DD')
@@ -54,7 +56,8 @@
 
         },
     	methods: {
-    		async initData(){
+            ...mapActions(["getAdminData"]),
+    		initData(){
     			const today = dtime().format('YYYY-MM-DD')
     			Promise.all([userCount(today), orderCount(today), adminDayCount(today), getUserCount(), getOrderCount(), adminCount()])
     			.then(res => {

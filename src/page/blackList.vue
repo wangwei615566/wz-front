@@ -69,6 +69,7 @@
 <script>
     import headTop from '../components/headTop'
     import {userList,userUpdate} from '../api/getData'
+    import {mapActions, mapState} from 'vuex'
     export default {
         data() {
             return {
@@ -86,12 +87,14 @@
             headTop,
         },
         created() {
+            this.getAdminData();
             this.initData();
         },
         mounted() {
 
         },
         methods: {
+            ...mapActions(["getAdminData"]),
             initData() {
                 try {
                     const params = {

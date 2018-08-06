@@ -42,6 +42,7 @@
 <script>
     import headTop from '../components/headTop'
     import {adminList, adminCount} from '@/api/getData'
+    import {mapActions, mapState} from 'vuex'
     export default {
         data(){
             return {
@@ -57,10 +58,12 @@
     		headTop,
     	},
         created(){
+            this.getAdminData();
             this.initData();
         },
         methods: {
-            async initData(){
+            ...mapActions(["getAdminData"]),
+            initData(){
                 try{
                     const countData = await adminCount();
                     if (countData.status == 1) {

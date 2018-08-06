@@ -87,7 +87,14 @@
                         <el-input v-model="selectTable.fee" auto-complete="off"></el-input>
                     </el-form-item>
                     <el-form-item label="状态" label-width="100px">
-                        <el-input v-model="selectTable.cashWay" auto-complete="off"></el-input>
+                        <el-select v-model="selectTable.cashWay" placeholder="">
+                            <el-option
+                                v-for="item in cashWays"
+                                :key="item.value"
+                                :label="item.label"
+                                :value="item.value">
+                            </el-option>
+                        </el-select>
                     </el-form-item>
                     <el-form-item label="创建时间" label-width="100px">
                         <el-input v-model="selectTable.createTime"></el-input>
@@ -105,7 +112,7 @@
 <script>
     import headTop from '../components/headTop'
     import {orderList,orderSave} from '../api/getData'
-
+    import {mapActions, mapState} from 'vuex'
     export default {
         data() {
             return {
@@ -129,6 +136,16 @@
                     value: '3',
                     label: '微信'
                 }],
+                cashWays: [{
+                    value: '1',
+                    label: '成功'
+                },{
+                    value: '0',
+                    label: '失败'
+                },{
+                    value: '2',
+                    label: '等待'
+                }],
                 cashWay:'',
                 orderSearch:''
             }
@@ -137,12 +154,14 @@
             headTop,
         },
         created() {
+            this.getAdminData();
             this.initData();
         },
         mounted() {
 
         },
         methods: {
+            ...mapActions(["getAdminData"]),
             initData() {
                 try {
                     const params = {

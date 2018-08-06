@@ -2,8 +2,10 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import {getAdminInfo} from '../api/getData'
 import {Message} from 'element-ui'
+import Router from '../router/index'
 
 Vue.use(Vuex)
+Vue.use(Router)
 
 const state = {
 	adminInfo: {
@@ -22,22 +24,36 @@ const actions = {
 		try{
             getAdminInfo().then(response => {
                 if (response.code == 200) {
-                    Message({
-                        type: 'success',
-                        message: '登录成功'
-                    });
-                    this.$router.push('manage')
+
                 } else {
                     Message({
-                        type: 'error',
-                        message: response.msg
+                        type: 'warning',
+                        message: '您尚未登陆或者session失效'
                     });
+                    Router.push('/')
                 }
             })
 		}catch(err){
 			console.log('您尚未登陆或者session失效')
 		}
-	}
+	},
+    getLoginData(){
+        try{
+            getAdminInfo().then(response => {
+                if (response.code == 200) {
+                    Router.push('manage')
+                } else {
+                    Message({
+                        type: 'warning',
+                        message: '您尚未登陆或者session失效'
+                    });
+                    Router.push('/')
+                }
+            })
+        }catch(err){
+            console.log('您尚未登陆或者session失效')
+        }
+    }
 }
 
 export default new Vuex.Store({

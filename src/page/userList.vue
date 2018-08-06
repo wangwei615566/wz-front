@@ -54,10 +54,14 @@
                 </el-table-column>
                 <el-table-column label="操作" width="160">
                     <template scope="scope">
-                        <el-button
+                        <div v-if="scope.row.state==1"> <el-button
                             size="small"
                             type="danger"
-                            @click="handleEdit(scope.row)">冻结</el-button>
+                            @click="handleEdit(scope.row)">冻结</el-button></div>
+                        <div v-if="scope.row.state==2"> <el-button
+                            size="small"
+                            type="info"
+                            @click="handleEdit(scope.row)">启用</el-button></div>
                     </template>
                 </el-table-column>
             </el-table>
@@ -78,6 +82,7 @@
 <script>
     import headTop from '../components/headTop'
     import {userList,userUpdate} from '../api/getData'
+    import {mapActions, mapState} from 'vuex'
     export default {
         data() {
             return {
@@ -106,12 +111,14 @@
             headTop,
         },
         created() {
+            this.getAdminData();
             this.initData();
         },
         mounted() {
 
         },
         methods: {
+            ...mapActions(["getAdminData"]),
             initData() {
                 try {
                     const params = {

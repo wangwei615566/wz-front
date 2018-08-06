@@ -76,6 +76,16 @@
                     <el-form-item label="参数类型" label-width="100px">
                         <el-input v-model="selectTable.typeStr" auto-complete="off"></el-input>
                     </el-form-item>
+                    <el-form-item label="状态" label-width="100px">
+                        <el-select v-model="selectTable.status" placeholder="">
+                            <el-option
+                                v-for="item in types"
+                                :key="item.value"
+                                :label="item.label"
+                                :value="item.value">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
                     <el-form-item label="备注" label-width="100px">
                         <el-input v-model="selectTable.remark" auto-complete="off"></el-input>
                     </el-form-item>
@@ -85,6 +95,39 @@
                     <el-button type="primary" @click="save()">确 定</el-button>
                 </div>
             </el-dialog>
+            <el-dialog title="更新参数信息" v-model="visible1">
+                <el-form :model="selectTable">
+                    <el-form-item label="参数编号" label-width="100px">
+                        <el-input v-model="selectTable.code" auto-complete="off"></el-input>
+                    </el-form-item>
+                    <el-form-item label="参数名称" label-width="100px">
+                        <el-input v-model="selectTable.name" auto-complete="off"></el-input>
+                    </el-form-item>
+                    <el-form-item label="参数值" label-width="100px">
+                        <el-input v-model="selectTable.value" auto-complete="off"></el-input>
+                    </el-form-item>
+                    <el-form-item label="参数类型" label-width="100px">
+                        <el-input v-model="selectTable.typeStr" auto-complete="off"></el-input>
+                    </el-form-item>
+                    <el-form-item label="状态" label-width="100px">
+                        <el-select v-model="selectTable.status" placeholder="">
+                            <el-option
+                                v-for="item in types"
+                                :key="item.value"
+                                :label="item.label"
+                                :value="item.value">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item label="备注" label-width="100px">
+                        <el-input v-model="selectTable.remark" auto-complete="off"></el-input>
+                    </el-form-item>
+                </el-form>
+                <div slot="footer" class="dialog-footer">
+                    <el-button @click="visible1 = false">取 消</el-button>
+                    <el-button type="primary" @click="update()">确 定</el-button>
+                </div>
+            </el-dialog>
         </div>
     </div>
 </template>
@@ -92,6 +135,7 @@
 <script>
     import headTop from '../components/headTop'
     import {systemConfig,refreshCache,saveCache} from '../api/getData'
+    import {mapActions, mapState} from 'vuex'
     export default {
         data() {
             return {
@@ -102,6 +146,7 @@
                 currentPage: 1,
                 selectTable: {},
                 visible:false,
+                visible1:false,
                 nameSearch:'',
                 stateSearch:'',
                 options: [{
@@ -114,18 +159,27 @@
                     value: '2',
                     label: '禁用'
                 }],
+                types: [{
+                    value: '1',
+                    label: '启用'
+                },{
+                    value: '0',
+                    label: '禁用'
+                }],
             }
         },
         components: {
             headTop,
         },
         created() {
+            this.getAdminData();
             this.initData();
         },
         mounted() {
 
         },
         methods: {
+            ...mapActions(["getAdminData"]),
             initData() {
                 try {
                     const params = {
@@ -152,6 +206,33 @@
             },
             save(params = {}){
                 try {
+                    this.selectTable.state = this.selectTable.status;
+                    params = {
+                        json:JSON.stringify(this.selectTable),
+                        status:"create"
+                    }
+                    saveCache(params).then(result => {
+                        if (result.code == 200) {
+                            this.$message({
+                                type: 'success',
+                                message: result.msg
+                            });
+                        } else {
+                            this.$message({
+                                type: 'error',
+                                message: result.msg
+                            });
+                        }
+                        this.visible = false;
+                        this.initData();
+                    })
+                } catch (err) {
+                    console.log('获取数据失败', err);
+                }
+            },
+            update(params = {}){
+                try {
+                    this.selectTable.state = this.selectTable.status;
                     params = {
                         json:JSON.stringify(this.selectTable),
                         status:"update"
@@ -168,6 +249,8 @@
                                 message: result.msg
                             });
                         }
+                        this.visible1 = false;
+                        this.initData();
                     })
                 } catch (err) {
                     console.log('获取数据失败', err);
@@ -201,7 +284,7 @@
             },
             handleEdit(row){
                 this.selectTable = row;
-                this.visible = true;
+                this.visible1 = true;
             },
             handleCurrentChange(val) {
                 const params = {

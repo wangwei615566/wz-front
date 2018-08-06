@@ -48,15 +48,13 @@
         },
         mounted() {
             this.showLogin = true;
-            if (!this.adminInfo.id) {
-                this.getAdminData()
-            }
+            this.getLoginData ();
         },
         computed: {
-            ...mapState(['adminInfo']),
+
         },
         methods: {
-            ...mapActions(['getAdminData']),
+            ...mapActions(["getLoginData"]),
             submitForm(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {

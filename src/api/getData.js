@@ -18,7 +18,7 @@ export const orderSave = data => axiosPost('/manage/order/search/save.htm', data
 /**
  * 获取管理员用户信息
  */
-export const getAdminInfo = () => axiosGet('/modules/manage/system/user/find.htm');
+export const getAdminInfo = () => axiosGet('/system/user/find.htm');
 
 /**
  * 获取用户列表
