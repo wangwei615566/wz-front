@@ -3,7 +3,7 @@
         <head-top>
         </head-top>
         <div>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;提现状态:
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;充值状态:
             <el-select v-model="state" placeholder="">
                 <el-option
                     v-for="item in options"
@@ -12,8 +12,8 @@
                     :value="item.value">
                 </el-option>
             </el-select>
-            &nbsp;&nbsp;&nbsp;支付宝账号:
-            <el-input v-model="orderSearch" placeholder="请输入提现账号" style="width:200px"></el-input>
+            &nbsp;&nbsp;&nbsp;付款账号:
+            <el-input v-model="orderSearch" placeholder="请输入付款帐号" style="width:200px"></el-input>
             <el-button type="primary" @click="doFilter">搜索</el-button>
         </div>
         <div class="table_container">
@@ -21,20 +21,20 @@
                 :data="tableData"
                 style="width: 100%">
                 <el-table-column
-                    label="用户名称"
-                    prop="loginName">
+                    label="收款账户"
+                    prop="recAccount">
                 </el-table-column>
                 <el-table-column
-                    label="支付宝账号"
-                    prop="accountNo">
+                    label="付款账户"
+                    prop="payAccount">
                 </el-table-column>
                 <el-table-column
-                    label="支付宝账号名称"
-                    prop="accountName">
-                </el-table-column>
-                <el-table-column
-                    label="提现金额"
+                    label="付款金额"
                     prop="amount">
+                </el-table-column>
+                <el-table-column
+                    label="备注"
+                    prop="remark">
                 </el-table-column>
                 <el-table-column
                     label="状态">
@@ -64,16 +64,19 @@
                     :total="count">
                 </el-pagination>
             </div>
-            <el-dialog title="修改订单信息" v-model="visible">
+            <el-dialog title="修改充值信息" v-model="visible">
                 <el-form :model="selectTable">
-                    <el-form-item label="支付宝账号" label-width="100px">
-                        <el-input v-model="selectTable.accountNo" auto-complete="off"></el-input>
+                    <el-form-item label="收款账户" label-width="100px">
+                        <el-input v-model="selectTable.recAccount" auto-complete="off"></el-input>
                     </el-form-item>
-                    <el-form-item label="支付宝账号名称" label-width="100px">
-                        <el-input v-model="selectTable.accountName" auto-complete="off"></el-input>
+                    <el-form-item label="付款账户" label-width="100px">
+                        <el-input v-model="selectTable.payAccount" auto-complete="off"></el-input>
                     </el-form-item>
-                    <el-form-item label="提现金额" label-width="100px">
+                    <el-form-item label="付款金额" label-width="100px">
                         <el-input v-model="selectTable.amount" auto-complete="off"></el-input>
+                    </el-form-item>
+                    <el-form-item label="备注" label-width="100px">
+                        <el-input v-model="selectTable.remark" auto-complete="off"></el-input>
                     </el-form-item>
                     <el-form-item label="状态" label-width="100px">
                         <el-select v-model="selectTable.state" placeholder="">
@@ -84,9 +87,6 @@
                                 :value="item.value">
                             </el-option>
                         </el-select>
-                    </el-form-item>
-                    <el-form-item label="创建时间" label-width="100px">
-                        <el-input v-model="selectTable.createTime"></el-input>
                     </el-form-item>
                 </el-form>
                 <div slot="footer" class="dialog-footer">
@@ -100,7 +100,7 @@
 
 <script>
     import headTop from '../components/headTop'
-    import {orderList,orderSave} from '../api/getData'
+    import {chargeList,chargeSave} from '../api/getData'
     import {mapActions, mapState} from 'vuex'
     export default {
         data() {
@@ -153,7 +153,7 @@
             doFilter(){
                 try {
                     const param = {
-                        searchParams: JSON.stringify({accountNo:this.orderSearch,state:this.state}),
+                        searchParams: JSON.stringify({payAccount:this.orderSearch,state:this.state}),
                         pageSize: this.pageSize,
                         current: this.currentPage
                     }
@@ -167,14 +167,14 @@
             },
             handleCurrentChange(val) {
                 const params = {
-                    searchParams: JSON.stringify({accountNo:this.orderSearch,state:this.state}),
+                    searchParams: JSON.stringify({payAccount:this.orderSearch,state:this.state}),
                     pageSize: this.pageSize,
                     current: val
                 }
                 this.getOrders(params)
             },
             getOrders(params = {}) {
-                orderList(params).then(result => {
+                chargeList(params).then(result => {
                     if (result.code == 200) {
                         this.count = result.page.total;
                         this.$message({
@@ -199,7 +199,7 @@
                 try{
                     Object.assign(this.selectTable);
                     let searchParams = {searchParams:JSON.stringify(this.selectTable)}
-                    orderSave(searchParams).then(result => {
+                    chargeSave(searchParams).then(result => {
                         if (result.code == 200) {
                             this.count = result.page.total;
                             this.$message({

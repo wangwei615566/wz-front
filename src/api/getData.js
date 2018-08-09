@@ -16,6 +16,14 @@ export const orderList = data => axiosPost('/manage/order/search/list.htm', data
  */
 export const orderSave = data => axiosPost('/manage/order/search/save.htm', data);
 /**
+ * 充值记录列表
+ */
+export const chargeList = data => axiosPost('/manage/charge/search/list.htm', data);
+/**
+ * 保存充值记录
+ */
+export const chargeSave = data => axiosPost('/manage/charge/search/save.htm', data);
+/**
  * 获取管理员用户信息
  */
 export const getAdminInfo = () => axiosGet('/system/user/find.htm');

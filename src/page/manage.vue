@@ -11,6 +11,7 @@
                     </el-submenu>
 					<el-menu-item index="system"><i class="el-icon-document"></i>系统参数设置</el-menu-item>
 					<el-menu-item index="orderList"><i class="el-icon-document"></i>订单管理</el-menu-item>
+					<el-menu-item index="chargeList"><i class="el-icon-document"></i>充值管理</el-menu-item>
 				</el-menu>
 			</el-col>
 			<el-col :span="20" style="height: 100%;overflow: auto;">

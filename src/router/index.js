@@ -9,6 +9,7 @@ const home = r => require.ensure([], () => r(require('@/page/home')), 'home');
 const userList = r => require.ensure([], () => r(require('@/page/userList')), 'userList');
 const blackList = r => require.ensure([], () => r(require('@/page/blackList')), 'blackList');
 const orderList = r => require.ensure([], () => r(require('@/page/orderList')), 'orderList');
+const chargeList = r => require.ensure([], () => r(require('@/page/chargeList')), 'chargeList');
 const system = r => require.ensure([], () => r(require('@/page/system')), 'system');
 
 const routes = [
@@ -40,6 +41,10 @@ const routes = [
             path: '/orderList',
             component: orderList,
             meta: ['订单管理'],
+        },{
+            path: '/chargeList',
+            component: chargeList,
+            meta: ['充值管理'],
         }]
 	}
 ]

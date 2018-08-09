@@ -29,10 +29,6 @@
                   label="参数值">
                 </el-table-column>
                 <el-table-column
-                  property="typeStr"
-                  label="参数类型">
-                </el-table-column>
-                <el-table-column
                   property="remark"
                   label="备注">
                 </el-table-column>
@@ -73,9 +69,6 @@
                     <el-form-item label="参数值" label-width="100px">
                         <el-input v-model="selectTable.value" auto-complete="off"></el-input>
                     </el-form-item>
-                    <el-form-item label="参数类型" label-width="100px">
-                        <el-input v-model="selectTable.typeStr" auto-complete="off"></el-input>
-                    </el-form-item>
                     <el-form-item label="状态" label-width="100px">
                         <el-select v-model="selectTable.status" placeholder="">
                             <el-option
@@ -105,9 +98,6 @@
                     </el-form-item>
                     <el-form-item label="参数值" label-width="100px">
                         <el-input v-model="selectTable.value" auto-complete="off"></el-input>
-                    </el-form-item>
-                    <el-form-item label="参数类型" label-width="100px">
-                        <el-input v-model="selectTable.typeStr" auto-complete="off"></el-input>
                     </el-form-item>
                     <el-form-item label="状态" label-width="100px">
                         <el-select v-model="selectTable.status" placeholder="">
@@ -160,10 +150,10 @@
                     label: '禁用'
                 }],
                 types: [{
-                    value: '1',
+                    value: 1,
                     label: '启用'
                 },{
-                    value: '0',
+                    value: 0,
                     label: '禁用'
                 }],
             }

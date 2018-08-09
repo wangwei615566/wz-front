@@ -1,6 +1,6 @@
 import axios from "axios";
 import  qs from "qs";
-axios.defaults.baseURL="http://localhost:8080"
+axios.defaults.baseURL="http://47.92.137.197:8090"
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 axios.interceptors.response.use(function (response) {//响应拦截
     return response.data;//处理返回的数据

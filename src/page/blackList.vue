@@ -45,10 +45,20 @@
                 </el-table-column>
                 <el-table-column label="操作" width="160">
                     <template scope="scope">
-                        <el-button
-                            size="small"
-                            type="danger"
-                            @click="handleEdit(scope.row)">冻结</el-button>
+                        <div style="display: flex">
+                            <el-button
+                                size="small"
+                                type="danger"
+                                @click="handleEdit(scope.row)">冻结</el-button>
+                            <div v-if="scope.row.vipState==1"> <el-button
+                                size="small"
+                                type="danger"
+                                @click="handleEdit(scope.row)">非会员</el-button></div>
+                            <div v-if="scope.row.vipState==0"> <el-button
+                                size="small"
+                                type="info"
+                                @click="handleEdit(scope.row)">会员</el-button></div>
+                        </div>
                     </template>
                 </el-table-column>
             </el-table>
@@ -123,10 +133,51 @@
                 console.log(`每页 ${val} 条`);
             },
             handleEdit(row){
+                let state = 1;
+                if(row.state == 1){
+                    state = 2;
+                } else {
+                    state = 1;
+                }
                 try{
-                    userUpdate({id:row.id}).then(result => {
+                    userUpdate({id:row.id,state:state}).then(result => {
                         if (result.code == 200) {
-                            this.getUsers(this.params);
+                            const params = {
+                                searchParams: JSON.stringify({state:2}),
+                                pageSize: this.pageSize,
+                                current: this.currentPage
+                            }
+                            this.getUsers(params);
+                        } else {
+                            this.$message({
+                                type: 'error',
+                                message: result.msg
+                            });
+                        }
+                    })
+                }catch(err){
+                    this.$message({
+                        type: 'error',
+                        message: err.message
+                    });
+                }
+            },
+            userEdit(row){
+                try{
+                    let vipState = 1;
+                    if(row.vipState == 1){
+                        vipState = 0;
+                    } else {
+                        vipState = 1;
+                    }
+                    userUpdate({id:row.id,vipState:vipState}).then(result => {
+                        if (result.code == 200) {
+                            const params = {
+                                searchParams: JSON.stringify({state:2}),
+                                pageSize: this.pageSize,
+                                current: this.currentPage
+                            }
+                            this.getUsers(params);
                         } else {
                             this.$message({
                                 type: 'error',
